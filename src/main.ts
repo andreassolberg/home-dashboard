@@ -1,24 +1,64 @@
-import './style.css'
-import typescriptLogo from './typescript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.ts'
+import "./style.css";
+import FloorMap from "./floormap/FloorMap";
+import HAData from "./ha/HAData";
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`
+console.log("App run!");
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+function parseHashFragment() {
+  const hash = window.location.hash.substr(1); // Remove the '#' symbol
+  const pairs = hash.split("&"); // Split by '&' to get key=value pairs
+  const attributes = {};
+
+  pairs.forEach((pair) => {
+    const [key, value] = pair.split("="); // Split by '=' to get key and value separately
+    attributes[decodeURIComponent(key)] = decodeURIComponent(value); // Decode URI components and store in object
+  });
+
+  return attributes;
+}
+
+const roomEntities: string[] = [
+  "binary_sensor.presence_ute",
+  "binary_sensor.presence_2etg",
+  "binary_sensor.presence_yttergang",
+  "binary_sensor.presence_kjellergang",
+  "binary_sensor.presence_kjellerstua",
+  "binary_sensor.presence_linnea",
+  "binary_sensor.presence_linus",
+  "binary_sensor.presence_bad",
+  "binary_sensor.presence_vaskerom",
+  "binary_sensor.presence_drivhus",
+  "binary_sensor.presence_bod",
+  "binary_sensor.presence_gjesterom",
+  "binary_sensor.presence_master_bedroom",
+  //"sensor.dim2",
+  //"sensor.dim1",
+  //"sensor.average_power_jan_voigts_vei_10",
+];
+
+// Preparation
+const attributes = parseHashFragment();
+if (!attributes.token) throw new Error("No token provided");
+let c = document.getElementById("box1");
+if (c === null) throw new Error("cannot find #box1");
+
+// Initialization
+let fm = new FloorMap(c);
+let ha = new HAData(attributes.token);
+
+// Updates
+ha.listen(roomEntities, (data) => {
+  console.log("Listen sayts ", data);
+  fm.update(data);
+});
+
+// const main = (attributes) => {};
+
+//main(attributes);
+
+// Usage Example:
+// window.addEventListener("hashchange", () => {
+//   const attributes = parseHashFragment();
+//   console.log(attributes); // Logs the parsed key-value pairs from the hash
+//   //main(attributes);
+// });
