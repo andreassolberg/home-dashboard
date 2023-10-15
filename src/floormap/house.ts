@@ -145,7 +145,7 @@ rooms0.push({
   ],
 });
 
-const house = {
+const house: any = {
   floors: [
     {
       name: "Kjeller",

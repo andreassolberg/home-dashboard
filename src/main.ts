@@ -4,14 +4,14 @@ import HAData from "./ha/HAData";
 
 console.log("App run!");
 
-function parseHashFragment() {
-  const hash = window.location.hash.substr(1); // Remove the '#' symbol
-  const pairs = hash.split("&"); // Split by '&' to get key=value pairs
-  const attributes = {};
+function parseHashFragment(): { [key: string]: string } {
+  const hash: string = window.location.hash.substr(1);
+  const pairs: string[] = hash.split("&");
+  const attributes: { [key: string]: string } = {};
 
-  pairs.forEach((pair) => {
-    const [key, value] = pair.split("="); // Split by '=' to get key and value separately
-    attributes[decodeURIComponent(key)] = decodeURIComponent(value); // Decode URI components and store in object
+  pairs.forEach((pair: string) => {
+    const [key, value] = pair.split("=");
+    attributes[decodeURIComponent(key)] = decodeURIComponent(value);
   });
 
   return attributes;
@@ -47,7 +47,7 @@ let fm = new FloorMap(c);
 let ha = new HAData(attributes.token);
 
 // Updates
-ha.listen(roomEntities, (data) => {
+ha.listen(roomEntities, (data: any) => {
   console.log("Listen sayts ", data);
   fm.update(data);
 });

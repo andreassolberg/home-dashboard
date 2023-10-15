@@ -1,3 +1,14 @@
+interface EntityState {
+  state: string;
+  updated: Date;
+}
+
+// interface EntityResponse {
+//   entity_id?: string;
+//   state: string;
+//   last_changed: string;
+// }
+
 export default class HAData {
   token: string;
   constructor(token: string) {
@@ -15,21 +26,20 @@ export default class HAData {
     }).then((response) => response.json());
   }
 
-  listen(entities: string | [], callback: Function) {
+  listen(entities: string[], callback: Function) {
     let msgid = 1;
-    const data = {};
+    const data: { [entityId: string]: EntityState } = {};
 
-    for (let i = 0; i < entities.length; i++) {
-      this.getAPI("states/" + entities[i]).then((response) => {
-        //notify(response)
-        if (!response["entity_id"]) return;
-        data[response["entity_id"]] = {
+    entities.forEach((entity) => {
+      this.getAPI("states/" + entity).then((response) => {
+        if (!response.entity_id) return;
+        data[response.entity_id] = {
           state: response.state,
           updated: new Date(response.last_changed),
         };
         callback(data);
       });
-    }
+    });
 
     const socket = new WebSocket("wss://home.solweb.no/api/websocket");
     socket.addEventListener("open", () => {
@@ -44,19 +54,24 @@ export default class HAData {
         })
       );
     }, 1000);
-    socket.addEventListener("message", (message) => {
-      try {
-        let msg = JSON.parse(message.data);
-        if (msg.type !== "event") return;
-        if (msg.event.event_type !== "state_changed") return;
-        if (!entities.includes(msg.event.data["entity_id"])) return;
+    socket.addEventListener(
+      "message",
+      function (this: WebSocket, message: any): void {
+        try {
+          const msg = JSON.parse(message.data);
+          if (msg.type !== "event") return;
+          if (msg.event.event_type !== "state_changed") return;
+          if (!entities.includes(msg.event.data.entity_id)) return;
 
-        data[msg.event.data["entity_id"]] = getStateObj(msg.event.data);
+          data[msg.event.data.entity_id] = getStateObj(msg.event.data);
 
-        callback(data);
-      } catch (e) {}
-    });
-    //yield data;
+          callback(data);
+        } catch (e) {
+          console.error("Error parsing message data:", e);
+        }
+      }
+    );
+
     return () => socket.close();
   }
 }
