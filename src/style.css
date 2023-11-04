@@ -12,7 +12,7 @@ body {
 }
 .box {
   /* Optional: Adds a border around each box */
-  border: 1px solid red;
+  /* border: 1px solid red; */
   display: flex;
   font-size: 2em;
   color: #555;
@@ -37,8 +37,12 @@ body {
   max-height: 100%;
 }
 #logoutput {
-  font-size: 6px;
-}
-#logoutput pre {
-  display: block;
+  background: white;
+  height: 100%;
+  width: 100%;
+  padding: 10px 5px;
+  text-align: left;
+  font-size: 8px;
+  font-family: monospace;
+  white-space: pre-wrap;
 }

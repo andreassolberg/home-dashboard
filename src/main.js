@@ -2,10 +2,11 @@ import "./style.css";
 import FloorMap from "./floormap/FloorMap";
 import HAData from "./ha/HAData";
 
-function logx(entry: string | JSON | Error): void {
+function logx(entry) {
   // Get the log output element
   let logOutput = document.getElementById("logoutput");
   if (logOutput === null) return;
+  logOutput.innerHTML = "";
 
   // Create a new text line
   var line = document.createElement("div");
@@ -35,15 +36,15 @@ function parseHashFragment() {
   const pairs = hash.split("&"); // Split by '&' to get key=value pairs
   const attributes = {};
 
-  pairs.forEach((pair: string) => {
-    const [key, value] = pair.split("=");
-    attributes[decodeURIComponent(key)] = decodeURIComponent(value);
+  pairs.forEach((pair) => {
+    const [key, value] = pair.split("="); // Split by '=' to get key and value separately
+    attributes[decodeURIComponent(key)] = decodeURIComponent(value); // Decode URI components and store in object
   });
 
   return attributes;
 }
 
-const roomEntities: string[] = [
+const roomEntities = [
   "binary_sensor.presence_ute",
   "binary_sensor.presence_2etg",
   "binary_sensor.presence_yttergang",
@@ -81,7 +82,13 @@ try {
   // Updates
   ha.listen(roomEntities, (data) => {
     console.log("Listen sayts ", data);
+    logx(data);
     fm.update(data);
+  });
+  ha.listen(["sensor.average_power_jan_voigts_vei_10"], (data) => {
+    console.log("Listen sayts ", data);
+    logx(data);
+    // fm.update(data);
   });
   logx("4");
 } catch (e) {
