@@ -4,6 +4,20 @@ import HAData from "./ha/HAData";
 
 console.log("App run!");
 
+const log = (str) => {
+  // First, get the container element where you want to append your log messages.
+  const container = document.getElementById("logoutput");
+
+  if (container) {
+    const newElement = document.createElement("pre");
+    newElement.textContent = str;
+    container.appendChild(newElement);
+  } else {
+    // Optional: if the container element was not found, you might want to log an error or handle it appropriately.
+    console.error("Log container not found!");
+  }
+};
+
 function parseHashFragment(): { [key: string]: string } {
   const hash: string = window.location.hash.substr(1);
   const pairs: string[] = hash.split("&");
@@ -51,6 +65,8 @@ ha.listen(roomEntities, (data: any) => {
   console.log("Listen sayts ", data);
   fm.update(data);
 });
+log("Yay");
+log(JSON.stringify(attributes, undefined, 1));
 
 // const main = (attributes) => {};
 

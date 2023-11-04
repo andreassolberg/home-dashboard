@@ -18,6 +18,14 @@ body {
   color: #555;
   justify-content: center;
   align-items: center;
+
+  word-wrap: break-word; /* Older browsers, also ensures words break to prevent overflow */
+  overflow-wrap: break-word; /* Preferred property for modern standards */
+  hyphens: auto; /* Optional: for adding hyphenation if text breaks */
+
+  overflow: hidden; /* Ensures the overflowing content is not visible outside the container */
+  text-overflow: ellipsis; /* Optional: Render an ellipsis ("...") to represent clipped text */
+  white-space: normal; /* Override "nowrap" which could be inherited */
 }
 
 #box1 {
@@ -27,4 +35,10 @@ body {
   width: 100%;
   max-width: 100%;
   max-height: 100%;
+}
+#logoutput {
+  font-size: 6px;
+}
+#logoutput pre {
+  display: block;
 }
