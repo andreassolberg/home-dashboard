@@ -1,5 +1,8 @@
 import "./style.css";
 import FloorMap from "./floormap/FloorMap";
+import Energy from "./energy/Energy";
+import Water from "./water/Water";
+import Temp from "./temp/Temp";
 import HAData from "./ha/HAData";
 
 function logx(entry) {
@@ -58,39 +61,63 @@ const roomEntities = [
   "binary_sensor.presence_bod",
   "binary_sensor.presence_gjesterom",
   "binary_sensor.presence_master_bedroom",
-  //"sensor.dim2",
-  //"sensor.dim1",
-  //"sensor.average_power_jan_voigts_vei_10",
 ];
 
 try {
-  // Preparation
-  logx("0");
   const attributes = parseHashFragment();
   if (!attributes.token) throw new Error("No token provided");
 
-  logx("1");
+  if (attributes.hasOwnProperty("dev")) {
+    document.addEventListener("DOMContentLoaded", function () {
+      document.body.style.backgroundColor = "#777";
+    });
+  }
 
+  // --- Floormap
   let c = document.getElementById("box1");
   if (c === null) throw new Error("cannot find #box1");
-
-  logx("2");
-  // Initialization
   let fm = new FloorMap(c);
   let ha = new HAData(attributes.token);
-  logx("3");
+
   // Updates
   ha.listen(roomEntities, (data) => {
-    console.log("Listen sayts ", data);
     logx(data);
     fm.update(data);
   });
-  ha.listen(["sensor.average_power_jan_voigts_vei_10"], (data) => {
-    console.log("Listen sayts ", data);
-    logx(data);
-    // fm.update(data);
+
+  // --- Energy
+  let c2 = document.getElementById("box2");
+  let energy = new Energy(c2);
+  ha.listen(
+    [
+      "sensor.power_jan_voigts_vei_10",
+      "sensor.electricity_price_jan_voigts_vei_10",
+    ],
+    (data) => {
+      energy.update(data);
+    }
+  );
+
+  // --- Water
+  let c3 = document.getElementById("box3");
+  let water = new Water(c3);
+  ha.listen(["sensor.vannforbruk_3m"], (data) => {
+    water.update(data);
   });
-  logx("4");
+
+  // --- Temp
+  let tempConfig = {
+    "sensor.netatmo_jan_voigts_v10_indoor_ute_temperature": "Ute",
+    "sensor.netatmo_jan_voigts_v10_indoor_drivhus_temperature": "Drivhus",
+    "sensor.netatmo_jan_voigts_v10_indoor_temperature": "Stua",
+    "sensor.netatmo_jan_voigts_v10_indoor_kjeller_temperature": "Kjellerstua",
+  };
+  let c4 = document.getElementById("box4");
+  let temp = new Temp(c4, tempConfig);
+  console.log("tempconfig listen to ", Object.keys(tempConfig));
+  ha.listen(Object.keys(tempConfig), (data) => {
+    temp.update(data);
+  });
 } catch (e) {
   console.error("Error", e);
   logx(e);
