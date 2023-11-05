@@ -59,14 +59,11 @@ export default class Temp {
     console.log("temp data", this.data, tempdata);
 
     let dy = 60;
-
-    console.log("temp data", tempdata);
-
-    // Add the line path
     this.svg
       .selectAll("text.tempdata")
-      .data(tempdata)
+      .data(tempdata, (d) => d.id)
       .join("text")
+      .attr("class", "tempdata")
       .attr("font-size", 26)
       .attr("dominant-baseline", "middle")
       .attr("text-anchor", "middle")
@@ -77,10 +74,9 @@ export default class Temp {
 
     this.svg
       .selectAll("text.labels")
-      .data(tempdata)
+      .data(tempdata, (d) => d.id)
       .join("text")
       .attr("class", "labels")
-
       .attr("font-size", 14)
       .attr("dominant-baseline", "middle")
       .attr("text-anchor", "middle")
