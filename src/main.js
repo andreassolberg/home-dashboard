@@ -5,6 +5,8 @@ import Water from "./water/Water";
 import Temp from "./temp/Temp";
 import HAData from "./ha/HAData";
 
+import FondData from "./fond/FondData";
+import FondChart from "./fond/FondChart";
 function logx(entry) {
   // Get the log output element
   let logOutput = document.getElementById("logoutput");
@@ -98,9 +100,18 @@ try {
     }
   );
 
-  // --- Water
+  // Fond chart
+  const fond = new FondData();
   let c3 = document.getElementById("box3");
-  let water = new Water(c3);
+  let fondchart = new FondChart(c3);
+  fond.getData().then((fond) => {
+    fondchart.update(fonddata);
+    console.log("fondata", fonddata);
+  });
+
+  // --- Water
+  let c4 = document.getElementById("box4");
+  let water = new Water(c4);
   ha.listen(["sensor.vannforbruk_3m"], (data) => {
     water.update(data);
   });
@@ -112,8 +123,8 @@ try {
     "sensor.netatmo_jan_voigts_v10_indoor_temperature": "Stua",
     "sensor.netatmo_jan_voigts_v10_indoor_kjeller_temperature": "Kjellerstua",
   };
-  let c4 = document.getElementById("box4");
-  let temp = new Temp(c4, tempConfig);
+  let c5 = document.getElementById("box5");
+  let temp = new Temp(c5, tempConfig);
   console.log("tempconfig listen to ", Object.keys(tempConfig));
   ha.listen(Object.keys(tempConfig), (data) => {
     temp.update(data);

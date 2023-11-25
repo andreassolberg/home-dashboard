@@ -49,14 +49,13 @@ export default class Temp {
   update(data) {
     // console.log("Update", data);
     for (let sensor of Object.keys(data)) {
-      console.log("Read ", sensor);
       let val = parseFloat(data[sensor].state);
-      console.log("Read ", sensor, val);
+      // console.log("Read ", sensor, val);
       this.data[sensor] = val;
     }
 
     let tempdata = this.getData();
-    console.log("temp data", this.data, tempdata);
+    // console.log("temp data", this.data, tempdata);
 
     let dy = 60;
     this.svg

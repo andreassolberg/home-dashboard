@@ -62,7 +62,7 @@ export default class FloorMap {
   }
 
   update(data) {
-    console.log("Update", data);
+    // console.log("Update", data);
     let houseg = this.svg
       .selectAll("g.floor")
       .data(house.floors)

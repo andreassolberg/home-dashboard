@@ -45,7 +45,7 @@ export default class Energy {
       this.addRecord(parseFloat(data["sensor.vannforbruk_3m"].state, 10));
     }
 
-    console.log("Water data", this.data);
+    // console.log("Water data", this.data);
     // console.log("wscg", this.svg);
     // Scales
     const xScale = d3.scaleTime().rangeRound([0, width - margin - marginRight]);

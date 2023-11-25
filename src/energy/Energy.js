@@ -63,7 +63,7 @@ export default class Energy {
       );
     }
 
-    console.log("Energy data", this.data);
+    // console.log("Energy data", this.data);
     // Scales
     const xScale = d3.scaleTime().rangeRound([0, width - margin - marginRight]);
     const yScale = d3.scaleLinear().rangeRound([height - margin - margin, 0]);
